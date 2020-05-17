@@ -1,0 +1,28 @@
+{
+  "manifest_version": 2,
+  "name": "TabStore",
+  "description": "Store tabs for viewing later",
+  "version": "0.1",
+  "background": {
+    "page": "background.html"
+  },
+  "browser_action": {
+    "default_title": "Tab store",
+    "default_icon": "bookmark.svg",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "tabs",
+    "menus",
+    "alarms",
+    "storage",
+    "*://getpocket.com/*",
+    "identity"
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{7d7368e3-be2e-45af-8bcf-036acdf2ce9d}",
+      "strict_min_version": "76.0"
+    }
+  }
+}

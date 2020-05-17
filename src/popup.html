@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+</head>
+
+<script src="popup.js" type="module"></script>
+<script src="common.js" type="module"></script>
+<style>
+  :root {
+    --blue-60: #0060df;
+    --grey-20: #ededf0;
+    --grey-30: #d7d7db;
+    --primary-text: #0c0c0d;
+    --secondary-text: #737373;
+  }
+
+  body {
+    padding: 0;
+    margin: 0;
+  }
+
+  div#bookmarks header {
+    font-family: sans-serif;
+    font-variant: small-caps;
+    font-weight: bold;
+    padding: 5pt 10pt;
+    color: var(--primary-text);
+    background-color: var(--grey-20);
+  }
+
+  div input {
+    margin: 5pt;
+  }
+
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    font-family: sans-serif;
+    font-size: small;
+    cursor: default;
+  }
+
+  ul li {
+    cursor: pointer;
+  }
+
+  ul#categories-list {
+    font-variant: small-caps;
+    font-weight: bold;
+    color: var(--secondary-text);
+  }
+
+  ul#categories-list li {
+    padding: 5pt;
+  }
+
+  li#add-category {
+    background-color: var(--grey-20);
+    color: var(--primary-text);
+  }
+
+  ul#bookmarks-list {
+    max-height: 100pt;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  ul#bookmarks-list li {
+    padding: 5pt;
+    color: var(--secondary-text);
+  }
+
+  ul.button-group {
+    display: flex;
+    border-width: 0px;
+    border-top-width: 1px;
+    border-color: var(--grey-30);
+    border-style: solid;
+  }
+
+  li.button {
+    padding: 8pt;
+    margin: 0;
+    display: inline-block;
+    text-align: center;
+    flex-basis: 1px;
+    flex-grow: 1;
+  }
+
+  li.button#ok {
+    background-color: var(--blue-60);
+    color: white;
+  }
+
+  li.button#cancel {
+    background-color: var(--grey-20);
+  }
+</style>
+
+<body>
+</body>
+
+</html>
