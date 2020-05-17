@@ -6,6 +6,7 @@ function uiSetCurrentView(view) {
     document.body.replaceChild(popupViews[view], document.body.firstChild);
     if (view == "dialog") {
         document.body.firstChild.firstChild.focus();
+        document.body.firstChild.firstChild.value = "";
     }
 }
 function uiUpdateView(key, val) {
@@ -74,7 +75,7 @@ function uiNewCategoryView() {
         title: "Cancel",
         id: "cancel",
         onclick: function () {
-            uiSetCurrentView(categoriesListView);
+            uiSetCurrentView("categories");
         }
     };
     let newCategoryView = document.createElement("div");
