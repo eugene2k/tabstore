@@ -1,10 +1,4 @@
 export class SyncManager {
-    syncItems;
-    syncAgent;
-    accessToken;
-    added;
-    deleted;
-    categories;
     constructor() {
         this.syncItems = new Array();
         this.added = new Object();
@@ -137,7 +131,7 @@ export async function authenticate(interactive) {
     return new SyncAgent(response.access_token);
 }
 class SyncAgent {
-    accessToken;
+    // accessToken;
     constructor(accessToken) {
         this.accessToken = accessToken;
     }

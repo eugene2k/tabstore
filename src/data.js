@@ -1,5 +1,4 @@
 export class BookmarkData {
-    data;
     init() {
         this.data = new Object();
         this.data.categories = new Array();

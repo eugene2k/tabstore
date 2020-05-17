@@ -3,7 +3,6 @@ import { SyncManager, authenticate } from './sync.js'
 import { BookmarkData } from './data.js'
 
 class MenuManager {
-    menuData;
     init(categories) {
         this.menuData = Array();
         browser.menus.create({
