@@ -1,3 +1,5 @@
+import { log } from './tabstore-common.js'
+
 export class SyncManager {
     constructor() {
         this.syncItems = new Array();
@@ -131,7 +133,6 @@ export async function authenticate(interactive) {
     return new SyncAgent(response.access_token);
 }
 class SyncAgent {
-    // accessToken;
     constructor(accessToken) {
         this.accessToken = accessToken;
     }

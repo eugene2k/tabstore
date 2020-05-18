@@ -1,18 +1,21 @@
+import { log } from './tabstore-common.js'
+
 export class BookmarkData {
     init() {
         this.data = new Object();
         this.data.categories = new Array();
         this.data.bookmarks = new Map();
     }
-    async loadOrInit() {
-        let result = await browser.storage.local.get("data");
-        if (result.hasOwnProperty("data")) {
-            this.data = result.data;
-        } else {
-            this.init();
-        }
+    loadOrInit() {
+        return browser.storage.local.get("data").then((result) => {
+            if (result.hasOwnProperty("data")) {
+                this.data = result.data;
+            } else {
+                this.init();
+            }
+        }, log);
     }
-    async save() {
+    save() {
         return browser.storage.local.set(this.data);
     }
     categories() {

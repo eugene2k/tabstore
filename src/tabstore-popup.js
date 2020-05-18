@@ -1,4 +1,4 @@
-import { log } from './common.js'
+import { log } from './tabstore-common.js'
 
 var popupViews;
 

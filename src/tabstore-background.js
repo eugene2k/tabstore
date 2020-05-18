@@ -1,6 +1,6 @@
-import { log } from './common.js'
-import { SyncManager, authenticate } from './sync.js'
-import { BookmarkData } from './data.js'
+import { log } from './tabstore-common.js'
+import { SyncManager, authenticate } from './tabstore-sync.js'
+import { BookmarkData } from './tabstore-data.js'
 
 class MenuManager {
     init(categories) {
@@ -56,7 +56,9 @@ bookmarkData.loadOrInit().then(() => {
     syncManager.setData(bookmarkData);
     menuManager.init(syncManager.listCategories());
 }, log);
-Promise.all([syncManager.init(), authenticate(false)]).then(rescheduleSync, e => {
+Promise.all([syncManager.init(), authenticate(false)]).then((results) => {
+    rescheduleSync(results[1]);
+}, e => {
     if (e.message != "Requires user interaction") { log(e) }
 });
 
