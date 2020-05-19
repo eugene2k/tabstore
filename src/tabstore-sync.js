@@ -34,7 +34,7 @@ export class SyncManager {
         for (let i = 0; i < this.categories.length; i++) {
             this.updateBookmarkData(i);
         }
-        await browser.storage.local.set({ pocket: { sync_items: this.syncItems, categories: this.categories } });
+        await browser.storage.local.set({ pocket: { syncItems: this.syncItems, categories: this.categories } });
     }
     async updateBookmarkData(categoryIndex) {
         let category = this.categories[categoryIndex].category;
