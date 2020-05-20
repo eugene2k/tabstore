@@ -12,7 +12,15 @@ function uiSetCurrentView(view) {
 function uiUpdateView(key, val) {
     popupViews[key] = val;
 }
+function createEmpty() {
+    let empty = document.createElement("li");
+    empty.id = "empty";
+    empty.innerText = "Empty";
+    return empty;
+}
 function uiCategoriesView(categories) {
+    let categoriesView = document.createElement("div");
+    categoriesView.id = "categories-view";
     let categoriesList = document.createElement("ul");
     categoriesList.id = "categories-list";
     for (let element of categories) {
@@ -29,59 +37,61 @@ function uiCategoriesView(categories) {
         };
         categoriesList.appendChild(listItem);
     }
-    let newCategoryListItem = document.createElement("li");
-    newCategoryListItem.innerText = "Add Category...";
-    newCategoryListItem.id = "add-category";
-    newCategoryListItem.onclick = function () {
-        uiSetCurrentView("dialog");
-    };
-    categoriesList.appendChild(newCategoryListItem);
-    return categoriesList;
-}
-function uiCreateButtonGroup(buttons) {
-    let buttonBar = document.createElement("ul");
-    buttonBar.className = "button-group";
-    for (let item of buttons) {
-        let button = document.createElement("li");
-        button.innerText = item.title;
-        button.onclick = item.onclick;
-        button.className = "button";
-        button.id = item.id;
-        buttonBar.appendChild(button);
+    if (categories.length == 0) {
+        categoriesList.appendChild(createEmpty());
     }
-    return buttonBar;
+    categoriesView.appendChild(categoriesList);
+    let addCategory = document.createElement("a");
+    addCategory.innerText = "Add Category...";
+    addCategory.id = "add-category";
+    addCategory.addEventListener("click", () => uiSetCurrentView("dialog"));
+    categoriesView.appendChild(addCategory);
+    browser.runtime.sendMessage({ action: 'auth_status' }).then(response => {
+        if (!response.authenticated) {
+            let loginButton = document.createElement("a");
+            loginButton.id = "auth-btn";
+            loginButton.onclick = function () {
+                browser.runtime.sendMessage({ action: 'authenticate' }).then(() => window.close(), log);
+            };
+            categoriesView.appendChild(loginButton);
+        }
+    });
+    return categoriesView;
 }
 function uiNewCategoryView() {
-    let entry = document.createElement("input");
-    entry.attributes['type'] = "text";
-    entry.style.display = "block";
-    let okButton = {
-        title: "OK",
-        id: "ok",
-        onclick: async function () {
-            let newCategoryEntry = document.querySelector("input");
-            let newCategoryName = newCategoryEntry.value;
-            try {
-                await browser.runtime.sendMessage({ action: "add_category", category: newCategoryName })
-                let result = await browser.runtime.sendMessage({ action: "list_categories" });
-                uiUpdateView("categories", uiCategoriesView(result.categories));
-                uiSetCurrentView("categories");
-            } catch (error) {
-                log(error);
-            }
-        }
-    };
-    let cancelButton = {
-        title: "Cancel",
-        id: "cancel",
-        onclick: function () {
-            uiSetCurrentView("categories");
-        }
-    };
-    let newCategoryView = document.createElement("div");
-    newCategoryView.appendChild(entry);
-    newCategoryView.appendChild(uiCreateButtonGroup([okButton, cancelButton]));
+    let newCategoryView = document.createElement("form");
     newCategoryView.id = "new-category-dialog";
+    newCategoryView.addEventListener("submit", async () => {
+        let newCategoryEntry = document.querySelector("input");
+        let newCategoryName = newCategoryEntry.value;
+        try {
+            await browser.runtime.sendMessage({ action: "add_category", category: newCategoryName })
+            let result = await browser.runtime.sendMessage({ action: "list_categories" });
+            uiUpdateView("categories", uiCategoriesView(result.categories));
+            uiSetCurrentView("categories");
+        } catch (error) {
+            log(error);
+        }
+    });
+    let entry = document.createElement("input");
+    entry.id = "entry";
+    entry.type = "text";
+    newCategoryView.appendChild(entry);
+    let submit = document.createElement("input");
+    submit.value = "OK";
+    submit.id = "ok";
+    submit.type = "submit";
+    submit.className = "button";
+    newCategoryView.appendChild(submit);
+    let cancel = document.createElement("input");
+    cancel.type = "button";
+    cancel.value = "Cancel";
+    cancel.id = "cancel";
+    cancel.className = "button";
+    cancel.addEventListener("click", () => {
+        uiSetCurrentView("categories");
+    });
+    newCategoryView.appendChild(cancel);
     return newCategoryView;
 }
 async function bookmarkHandler() {
@@ -113,10 +123,14 @@ function uiBookmarksView(category, list) {
     for (let i = 0; i < list.length; i++) {
         let bookmarkListItem = document.createElement("li");
         bookmarkListItem.innerText = list[i].title;
+        bookmarkListItem.title = list[i].title;
         bookmarkListItem['data-url'] = list[i].url;
         bookmarkListItem['data-category'] = category;
         bookmarkListItem.onclick = bookmarkHandler;
         bookmarksList.appendChild(bookmarkListItem);
+    }
+    if (list.length == 0) {
+        bookmarksList.appendChild(createEmpty());
     }
     bookmarksView.appendChild(header);
     bookmarksView.appendChild(bookmarksList);
@@ -141,17 +155,6 @@ window.addEventListener('load', async (event) => {
             dialog: uiNewCategoryView(),
         };
         uiSetCurrentView("categories");
-        let response = await browser.runtime.sendMessage({ action: 'auth_status' });
-        if (!response.authenticated) {
-            let loginButton = document.createElement("button");
-            loginButton.innerText = "Login to Pocket";
-            loginButton.onclick = function () {
-                this.innerText = "Logging in...";
-                this.disabled = true;
-                browser.runtime.sendMessage({ action: 'authenticate' }).then(() => window.close(), (e) => log(e));
-            };
-            document.body.appendChild(loginButton);
-        }
     } catch (error) {
         log(error);
     }

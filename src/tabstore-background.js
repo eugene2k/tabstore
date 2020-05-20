@@ -65,6 +65,7 @@ Promise.all([syncManager.init(), authenticate(false)]).then((results) => {
 function rescheduleSync(syncAgent) {
     syncManager.setAgent(syncAgent);
     browser.alarms.create("sync", { periodInMinutes: 1.0 });
+    return syncManager.sync();
 }
 
 browser.alarms.onAlarm.addListener(async (alarm) => {
