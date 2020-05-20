@@ -102,7 +102,7 @@ export class SyncManager {
             let since = 0;
             this.categories.push({ category, since });
             if (this.isAuthenticated()) {
-                return this.updateBookmarkData(idx).finally(() => this.bookmarkData.save());
+                return this.updateBookmarkData(idx).then(() => this.bookmarkData.save());
             } else {
                 this.bookmarkData.save();
             }

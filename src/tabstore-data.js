@@ -4,7 +4,7 @@ export class BookmarkData {
     init() {
         this.data = new Object();
         this.data.categories = new Array();
-        this.data.bookmarks = new Map();
+        this.data.bookmarks = new Object();
     }
     loadOrInit() {
         return browser.storage.local.get("data").then((result) => {
@@ -30,11 +30,11 @@ export class BookmarkData {
         let idx = this.data.categories.findIndex(item == category);
         if (idx >= 0) {
             this.data.categories.splice(idx, 1);
-            this.data.bookmarks.forEach((value, key, map) => {
+            Object.entries(this.data.bookmarks).forEach(([key, value]) => {
                 if (value.category == idx) {
-                    map.delete(key);
+                    delete this.data.bookmarks[key];
                 } else if (value.category > idx) {
-                    map[key] = { category: value.category - 1, title: value.title }
+                    this.data.bookmarks[key] = { category: value.category - 1, title: value.title }
                 }
             })
         }
@@ -42,8 +42,8 @@ export class BookmarkData {
     bookmarks(category) {
         let idx = this.data.categories.findIndex(item => item == category);
         let bookmarks = new Array();
-        this.data.bookmarks.forEach((value, key, map) => {
-            if (value.index == idx) {
+        Object.entries(this.data.bookmarks).forEach(([key, value]) => {
+            if (value.category == idx) {
                 bookmarks.push({ url: key, title: value.title });
             }
         })
@@ -52,7 +52,7 @@ export class BookmarkData {
     addBookmark(category, url, title) {
         let idx = this.data.categories.findIndex(item => item == category);
         if (idx > -1) {
-            this.data.bookmarks.set(url, { index: idx, title });
+            this.data.bookmarks[url] = { category: idx, title };
         }
     }
     removeBookmark(url) {
