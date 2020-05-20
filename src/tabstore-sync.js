@@ -34,7 +34,8 @@ export class SyncManager {
         for (let i = 0; i < this.categories.length; i++) {
             this.updateBookmarkData(i);
         }
-        await browser.storage.local.set({ pocket: { syncItems: this.syncItems, categories: this.categories } });
+        this.bookmarkData.save();
+        browser.storage.local.set({ pocket: { syncItems: this.syncItems, categories: this.categories } });
     }
     async updateBookmarkData(categoryIndex) {
         let category = this.categories[categoryIndex].category;
@@ -60,6 +61,7 @@ export class SyncManager {
     }
     removeBookmark(url) {
         this.bookmarkData.removeBookmark(url);
+        this.bookmarkData.save();
         let idx = this.syncItems.findIndex(item => item.url == url);
         if (idx > -1) {
             let id = this.syncItems[idx].id;
@@ -76,6 +78,7 @@ export class SyncManager {
     }
     addBookmark(category, url, title, time) {
         this.bookmarkData.addBookmark(category, url, title);
+        this.bookmarkData.save();
         if (!this.added.hasOwnProperty(category)) {
             this.added[category] = new Array();
         }

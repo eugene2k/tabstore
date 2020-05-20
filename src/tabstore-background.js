@@ -70,7 +70,6 @@ function rescheduleSync(syncAgent) {
 browser.alarms.onAlarm.addListener(async (alarm) => {
     if (alarm.name == "sync") {
         await syncManager.sync(bookmarkData, false);
-        bookmarkData.save();
     }
 })
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {

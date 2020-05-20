@@ -16,7 +16,7 @@ export class BookmarkData {
         }, log);
     }
     save() {
-        return browser.storage.local.set(this.data);
+        return browser.storage.local.set({ data: this.data });
     }
     categories() {
         return this.data.categories;
